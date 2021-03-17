@@ -76,13 +76,15 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   title: {
+    fontFamily: 'open-sans-bold',
     fontSize: 18,
-    marginVertical: 4,
+    marginVertical: 2,
   },
   details: { alignItems: 'center', height: '15%', padding: 10 },
   price: {
     fontSize: 14,
     color: '#888',
+    fontFamily: 'open-sans',
   },
   actions: {
     flexDirection: 'row',
