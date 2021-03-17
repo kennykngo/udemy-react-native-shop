@@ -3,13 +3,15 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import Colors from '../constants/Colors';
-import ProductsOverViewScreen from '../screens/shop/ProductsOverviewScreen';
+import CartScreen from '../screens/shop/CartScreen';
 import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
+import ProductsOverViewScreen from '../screens/shop/ProductsOverviewScreen';
 
 const ProductsNavigator = createStackNavigator(
   {
     ProductsOverView: ProductsOverViewScreen,
     ProductDetail: ProductDetailScreen,
+    Cart: CartScreen,
   },
   {
     defaultNavigationOptions: {
