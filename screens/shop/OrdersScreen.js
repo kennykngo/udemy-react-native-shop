@@ -15,8 +15,11 @@ const OrdersScreen = (props) => {
       keyExtractor={(item) => item.id}
       renderItem={(itemData) => (
         <OrderItem
+          // .item - obj - of itemData
+          // .totalAmount - etc. is literally :any from the orders.js model
           amount={itemData.item.totalAmount}
           date={itemData.item.readableDate}
+          items={itemData.item.items}
         />
       )}
     />
