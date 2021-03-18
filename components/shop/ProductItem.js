@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginVertical: 2,
   },
-  details: { alignItems: 'center', height: '15%', padding: 10 },
+  details: { alignItems: 'center', height: '17%', padding: 10 },
   price: {
     fontSize: 14,
     color: '#888',
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: '25%',
+    height: '23%',
     paddingHorizontal: 20,
   },
 });
