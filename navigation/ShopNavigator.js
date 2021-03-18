@@ -9,6 +9,7 @@ import CartScreen from '../screens/shop/CartScreen';
 import OrdersScreen from '../screens/shop/OrdersScreen';
 import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
 import ProductsOverViewScreen from '../screens/shop/ProductsOverviewScreen';
+import UserProductsScreen from '../screens/user/UserProductsScreen';
 import { Ionicons } from '@expo/vector-icons';
 
 const defaultNavOptions = {
@@ -62,10 +63,29 @@ const OrdersNavigator = createStackNavigator(
   }
 );
 
+const AdminNavigator = createStackNavigator(
+  {
+    UserProducts: UserProductsScreen,
+  },
+  {
+    navigationOptions: {
+      drawerIcon: (drawerConfig) => (
+        <Ionicons
+          name={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
+          size={23}
+          color={drawerConfig.tintColor}
+        />
+      ),
+    },
+    defaultNavigationOptions: defaultNavOptions,
+  }
+);
+
 const ShopNavigator = createDrawerNavigator(
   {
     Products: ProductsNavigator,
     Orders: OrdersNavigator,
+    Admin: AdminNavigator,
   },
   {
     contentOptions: {
