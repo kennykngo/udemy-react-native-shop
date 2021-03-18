@@ -11,7 +11,7 @@ const OrderItem = (props) => {
         <Text style={styles.totalAmount}>${props.amount.toFixed(2)}</Text>
         <Text style={styles.date}>{props.date} </Text>
       </View>
-      <Button color={Colors.primary} title='show details' />
+      <Button color={Colors.primary} title='Show Details' />
     </View>
   );
 };
@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     margin: 20,
     padding: 10,
+    alignItems: 'center',
   },
   summary: {
     flexDirection: 'row',
