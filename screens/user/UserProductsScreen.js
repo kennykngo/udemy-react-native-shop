@@ -22,7 +22,7 @@ const UserProductScreen = (props) => {
     Alert.alert(
       'Are you sure?',
       'Do you really want to delete this items?',
-      { text: 'No', style: 'default' },
+      [{ text: 'No', style: 'default' }],
       {
         text: 'Yes',
         style: 'destructive',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TextInput,
   ScrollView,
   Platform,
+  Alert,
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
@@ -25,6 +26,7 @@ const EditProductScreen = (props) => {
 
   // if that slice of state exists, then we want to pre-populate the value input OR place an empty string
   const [title, setTitle] = useState(editedProduct ? editedProduct.title : '');
+  const [titleIsValid, setTitleIsValid] = useState(false);
   const [imageUrl, setImageUrl] = useState(
     editedProduct ? editedProduct.imageUrl : ''
   );
@@ -34,6 +36,14 @@ const EditProductScreen = (props) => {
   );
 
   const submitHandler = useCallback(() => {
+    if (!titleIsValid) {
+      Alert.alert('Wrong Input!', 'Please check the errors in the form.', [
+        {
+          text: 'Okay',
+        },
+      ]);
+      return;
+    }
     // if we're not editing the product, we're adding
     if (editedProduct) {
       dispatch(
@@ -45,12 +55,22 @@ const EditProductScreen = (props) => {
       );
       props.navigation.goBack();
     }
-  }, [dispatch, prodId, title, description, imageUrl]);
+    // since we're checking for the titleIsValid, we MUST place it on the dependency array
+  }, [dispatch, prodId, title, description, imageUrl, titleIsValid]);
 
   // makes the submitHandler() retriveable from navigationOptions
   useEffect(() => {
     props.navigation.setParams({ submit: submitHandler });
   }, [submitHandler]);
+
+  const titleChangeHandler = (text) => {
+    if (text.trim().length === 0) {
+      setTitleIsValid(false);
+    } else {
+      setTitleIsValid(true);
+    }
+    setTitle(text);
+  };
 
   return (
     <ScrollView>
@@ -60,8 +80,13 @@ const EditProductScreen = (props) => {
           <TextInput
             style={styles.input}
             value={title}
-            onChangeText={(text) => setTitle(text)}
+            onChangeText={titleChangeHandler}
+            keyboardType='default'
+            autoCapitalize='sentences'
+            autoCorrect={false}
+            returnKeyType='next'
           />
+          {!titleIsValid && <Text> Please enter a valid text </Text>}
         </View>
         <View style={styles.formControl}>
           <Text style={styles.label}> Image Url</Text>
@@ -79,6 +104,7 @@ const EditProductScreen = (props) => {
               style={styles.input}
               value={price}
               onChangeText={(text) => setPrice(text)}
+              keyboardType='decimal-pad'
             />
           </View>
         )}
