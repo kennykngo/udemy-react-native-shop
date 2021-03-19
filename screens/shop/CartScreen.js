@@ -6,6 +6,7 @@ import CartItem from '../../components/shop/CartItem';
 import Colors from '../../constants/Colors';
 import * as cartActions from '../../store/actions/cart';
 import * as orderActions from '../../store/actions/orders';
+import Card from '../../components/UI/Card';
 
 const CartScreen = (props) => {
   // .cart - App.js
@@ -34,7 +35,7 @@ const CartScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.summary}>
+      <Card style={styles.summary}>
         <Text style={styles.summaryText}>
           Total:{' '}
           <Text style={styles.amount}>
@@ -50,7 +51,7 @@ const CartScreen = (props) => {
             dispatch(orderActions.addOrder(cartItems, cartTotalAmount));
           }}
         />
-      </View>
+      </Card>
       <FlatList
         data={cartItems}
         keyExtractor={(item) => item.productId}

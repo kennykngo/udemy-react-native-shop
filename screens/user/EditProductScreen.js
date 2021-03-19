@@ -8,9 +8,10 @@ import {
   Platform,
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import HeaderButton from '../../components/UI/HeaderButton';
+import * as productActions from '../../store/actions/products';
 
 const EditProductScreen = (props) => {
   // first, take the productId (from editProductHandler of UserProductsScreen)
@@ -19,6 +20,8 @@ const EditProductScreen = (props) => {
   const editedProduct = useSelector((state) =>
     state.products.userProducts.find((prod) => prodId === prod.id)
   );
+
+  const dispatch = useDispatch();
 
   // if that slice of state exists, then we want to pre-populate the value input OR place an empty string
   const [title, setTitle] = useState(editedProduct ? editedProduct.title : '');
@@ -31,8 +34,18 @@ const EditProductScreen = (props) => {
   );
 
   const submitHandler = useCallback(() => {
-    console.log('Submitting!');
-  }, []);
+    // if we're not editing the product, we're adding
+    if (editedProduct) {
+      dispatch(
+        productActions.updateProduct(prodId, title, description, imageUrl)
+      );
+    } else {
+      dispatch(
+        productActions.createProduct(title, description, imageUrl, +price)
+      );
+      props.navigation.goBack();
+    }
+  }, [dispatch, prodId, title, description, imageUrl]);
 
   // makes the submitHandler() retriveable from navigationOptions
   useEffect(() => {
@@ -96,10 +109,7 @@ EditProductScreen.navigationOptions = (navData) => {
           iconName={
             Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'
           }
-          onPress={() => {
-            // navData.navigation.navigate('EditProduct');
-            submitFunction;
-          }}
+          onPress={submitFunction}
         />
       </HeaderButtons>
     ),
