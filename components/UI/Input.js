@@ -76,6 +76,7 @@ const Input = (props) => {
       />
       {/* show the errorText ONLY if inputState.isValid is INVALID
 	  AND touched === true */}
+      {/* MEANING: if you touched it then touched away, the text will show! */}
       {!inputState.isValid && inputState.touched && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}> {props.errorText} </Text>
@@ -98,6 +99,14 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
+  },
+  errorContainer: {
+    marginVertical: 5,
+  },
+  errorText: {
+    fontFamily: 'open-sans',
+    color: 'red',
+    fontSize: 13,
   },
 });
 

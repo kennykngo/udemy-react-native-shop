@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import {
   Alert,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
   View,
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -130,63 +129,69 @@ const EditProductScreen = (props) => {
   );
 
   return (
-    <ScrollView>
-      <View style={styles.form}>
-        <Input
-          id='title'
-          label='Title'
-          errorText='Please enter a valid title!'
-          keyboardType='default'
-          autoCapitalize='sentences'
-          autoCorrect={false}
-          returnKeyType='next'
-          onInputChange={inputChangeHandler}
-          initialValue={editedProduct ? editedProduct.title : ''}
-          initallyValid={!!editedProduct}
-          required
-        />
-        <Input
-          id='imageUrl'
-          label='ImageUrl'
-          errorText='Please enter a valid imageUrl!'
-          keyboardType='default'
-          returnKeyType='next'
-          onInputChange={inputChangeHandler}
-          initialValue={editedProduct ? editedProduct.title : ''}
-          initallyValid={!!editedProduct}
-          required
-        />
-        {/* if editedProduct exists, return null instead of price */}
-        {editedProduct ? null : (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior='padding'
+      keyboardVerticalOffset={100}
+    >
+      <ScrollView>
+        <View style={styles.form}>
           <Input
-            id='price'
-            label='Price'
-            errorText='Please enter a valid price!'
-            keyboardType='decimal-pad'
-            onInputChange={inputChangeHandler}
+            id='title'
+            label='Title'
+            errorText='Please enter a valid title!'
+            keyboardType='default'
+            autoCapitalize='sentences'
+            autoCorrect={false}
             returnKeyType='next'
+            onInputChange={inputChangeHandler}
+            initialValue={editedProduct ? editedProduct.title : ''}
+            initallyValid={!!editedProduct}
             required
-            min={0}
           />
-        )}
-        <Input
-          id='description'
-          label='Description'
-          errorText='Please enter a valid description'
-          keyboardType='default'
-          returnKeyType='next'
-          multiline
-          numberOfLines={3}
-          autoCapitalize='sentences'
-          autoCorrect
-          onInputChange={inputChangeHandler}
-          initialValue={editedProduct ? editedProduct.title : ''}
-          initallyValid={!!editedProduct}
-          required
-          minLength={5}
-        />
-      </View>
-    </ScrollView>
+          <Input
+            id='imageUrl'
+            label='ImageUrl'
+            errorText='Please enter a valid imageUrl!'
+            keyboardType='default'
+            returnKeyType='next'
+            onInputChange={inputChangeHandler}
+            initialValue={editedProduct ? editedProduct.title : ''}
+            initallyValid={!!editedProduct}
+            required
+          />
+          {/* if editedProduct exists, return null instead of price */}
+          {editedProduct ? null : (
+            <Input
+              id='price'
+              label='Price'
+              errorText='Please enter a valid price!'
+              keyboardType='decimal-pad'
+              onInputChange={inputChangeHandler}
+              returnKeyType='next'
+              required
+              min={0}
+            />
+          )}
+          <Input
+            id='description'
+            label='Description'
+            errorText='Please enter a valid description'
+            keyboardType='default'
+            returnKeyType='next'
+            multiline
+            numberOfLines={3}
+            autoCapitalize='sentences'
+            autoCorrect
+            onInputChange={inputChangeHandler}
+            initialValue={editedProduct ? editedProduct.title : ''}
+            initallyValid={!!editedProduct}
+            required
+            minLength={5}
+          />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
