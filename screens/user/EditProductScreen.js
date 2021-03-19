@@ -1,18 +1,50 @@
-import React, { useState, useEffect, useCallback, useReducer } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  Platform,
   Alert,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import HeaderButton from '../../components/UI/HeaderButton';
 import * as productActions from '../../store/actions/products';
+
+const FORM_INPUT_UPDATE = 'UPDATE';
+
+// built outside of the function to avoid rerenders
+const formReducer = (state, action) => {
+  if (action.type === FORM_INPUT_UPDATE) {
+    const updatedValues = {
+      ...state.inputValues,
+      // dynamically store the keys and dynamically change the values
+      // Ex. input - 'title', then storing it in the action's values
+      [action.input]: action.value,
+    };
+    // first store the inputValidities EXISTING values
+    const updatedValidities = {
+      ...state.updatedValidities,
+      [action.input]: action.isValid,
+    };
+
+    let updatedFormIsValid = true;
+    // checks if ANY one of the updatedValidities[key] is false, it'll automatically override the updatedFormIsValid variable
+    for (const key in updatedValidities) {
+      updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
+    }
+
+    return {
+      formIsValid: updatedFormIsValid,
+      inputValidities: updatedValidities,
+      inputValues: updatedValues,
+    };
+  }
+  return state;
+};
 
 const EditProductScreen = (props) => {
   // first, take the productId (from editProductHandler of UserProductsScreen)
@@ -23,17 +55,26 @@ const EditProductScreen = (props) => {
   );
 
   const dispatch = useDispatch();
+  // useReducer takes in the reducer() function AND takes an optional second argument about the initial state
+  // This ALSO takes an array that can be distructured
+
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      title: editedProduct ? editedProduct.title : '',
+      imageUrl: editedProduct ? editedProduct.imageUrl : '',
+      description: editedProduct ? editedProduct.description : '',
+      price: editedProduct ? editedProduct.price : '',
+    },
+    inputValidities: {
+      title: editedProduct ? true : false,
+      imageUrl: editedProduct ? true : false,
+      description: editedProduct ? true : false,
+      price: editedProduct ? true : false,
+    },
+    formIsValid: editedProduct ? true : false,
+  });
 
   // if that slice of state exists, then we want to pre-populate the value input OR place an empty string
-  const [title, setTitle] = useState(editedProduct ? editedProduct.title : '');
-  const [titleIsValid, setTitleIsValid] = useState(false);
-  const [imageUrl, setImageUrl] = useState(
-    editedProduct ? editedProduct.imageUrl : ''
-  );
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState(
-    editedProduct ? editedProduct.description : ''
-  );
 
   const submitHandler = useCallback(() => {
     if (!titleIsValid) {
@@ -63,13 +104,19 @@ const EditProductScreen = (props) => {
     props.navigation.setParams({ submit: submitHandler });
   }, [submitHandler]);
 
-  const titleChangeHandler = (text) => {
-    if (text.trim().length === 0) {
-      setTitleIsValid(false);
-    } else {
-      setTitleIsValid(true);
+  // created a reu
+  const textChangeHandler = (inputIdentifier, text) => {
+    let isValid = false;
+    if (text.trim().length > 0) {
+      isValid = true;
     }
-    setTitle(text);
+    dispatchFormState({
+      type: FORM_INPUT_UPDATE,
+      value: text,
+      isValid,
+      // same as the key in the u
+      input: inputIdentifier,
+    });
   };
 
   return (
@@ -79,8 +126,8 @@ const EditProductScreen = (props) => {
           <Text style={styles.label}> Title</Text>
           <TextInput
             style={styles.input}
-            value={title}
-            onChangeText={titleChangeHandler}
+            value={formState.inputValues.title}
+            onChangeText={textChangeHandler.bind(this, 'title')}
             keyboardType='default'
             autoCapitalize='sentences'
             autoCorrect={false}
@@ -92,8 +139,8 @@ const EditProductScreen = (props) => {
           <Text style={styles.label}> Image Url</Text>
           <TextInput
             style={styles.input}
-            value={imageUrl}
-            onChangeText={(text) => setImageUrl(text)}
+            value={formState.inputValues.imageUrl}
+            onChangeText={textChangeHandler.bind(this, 'imageUrl')}
           />
         </View>
         {/* if editedProduct exists, return null instead of price */}
@@ -102,8 +149,8 @@ const EditProductScreen = (props) => {
             <Text style={styles.label}> Price </Text>
             <TextInput
               style={styles.input}
-              value={price}
-              onChangeText={(text) => setPrice(text)}
+              value={formState.inputValues.price}
+              onChangeText={textChangeHandler.bind(this, 'price')}
               keyboardType='decimal-pad'
             />
           </View>
@@ -112,8 +159,8 @@ const EditProductScreen = (props) => {
           <Text style={styles.label}> Description</Text>
           <TextInput
             style={styles.input}
-            value={description}
-            onChangeText={(text) => setDescription(text)}
+            value={formState.inputValues.description}
+            onChangeText={textChangeHandler.bind(this, 'description')}
           />
         </View>
       </View>
