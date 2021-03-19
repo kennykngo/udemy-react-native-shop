@@ -77,7 +77,7 @@ const EditProductScreen = (props) => {
   // if that slice of state exists, then we want to pre-populate the value input OR place an empty string
 
   const submitHandler = useCallback(() => {
-    if (!titleIsValid) {
+    if (!formState.formIsValid) {
       Alert.alert('Wrong Input!', 'Please check the errors in the form.', [
         {
           text: 'Okay',
@@ -88,16 +88,27 @@ const EditProductScreen = (props) => {
     // if we're not editing the product, we're adding
     if (editedProduct) {
       dispatch(
-        productActions.updateProduct(prodId, title, description, imageUrl)
+        productActions.updateProduct(
+          prodId,
+          formState.inputValues.title,
+          formState.inputValues.description,
+          formState.inputValues.imageUrl
+        )
       );
+      props.navigation.goBack();
     } else {
       dispatch(
-        productActions.createProduct(title, description, imageUrl, +price)
+        productActions.createProduct(
+          formState.inputValues.title,
+          formState.inputValues.description,
+          formState.inputValues.imageUrl,
+          +formState.inputValues.price
+        )
       );
       props.navigation.goBack();
     }
     // since we're checking for the titleIsValid, we MUST place it on the dependency array
-  }, [dispatch, prodId, title, description, imageUrl, titleIsValid]);
+  }, [dispatch, prodId, formState]);
 
   // makes the submitHandler() retriveable from navigationOptions
   useEffect(() => {
@@ -133,7 +144,9 @@ const EditProductScreen = (props) => {
             autoCorrect={false}
             returnKeyType='next'
           />
-          {!titleIsValid && <Text> Please enter a valid text </Text>}
+          {!formState.inputValidities.title && (
+            <Text> Please enter a valid text </Text>
+          )}
         </View>
         <View style={styles.formControl}>
           <Text style={styles.label}> Image Url</Text>
