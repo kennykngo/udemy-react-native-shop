@@ -156,7 +156,7 @@ const EditProductScreen = (props) => {
             keyboardType='default'
             returnKeyType='next'
             onInputChange={inputChangeHandler}
-            initialValue={editedProduct ? editedProduct.title : ''}
+            initialValue={editedProduct ? editedProduct.imageUrl : ''}
             initallyValid={!!editedProduct}
             required
           />
@@ -184,7 +184,7 @@ const EditProductScreen = (props) => {
             autoCapitalize='sentences'
             autoCorrect
             onInputChange={inputChangeHandler}
-            initialValue={editedProduct ? editedProduct.title : ''}
+            initialValue={editedProduct ? editedProduct.description : ''}
             initallyValid={!!editedProduct}
             required
             minLength={5}

@@ -9,7 +9,6 @@ import Colors from '../../constants/Colors';
 import * as productsActions from '../../store/actions/products';
 
 const UserProductScreen = (props) => {
-  //
   const userProducts = useSelector((state) => state.products.userProducts);
   const dispatch = useDispatch();
 
@@ -19,18 +18,16 @@ const UserProductScreen = (props) => {
 
   //
   const deleteHandler = (id) => {
-    Alert.alert(
-      'Are you sure?',
-      'Do you really want to delete this items?',
-      [{ text: 'No', style: 'default' }],
+    Alert.alert('Are you sure?', 'Do you really want to delete this items?', [
+      { text: 'No', style: 'default' },
       {
         text: 'Yes',
         style: 'destructive',
         onPress: () => {
           dispatch(productsActions.deleteProduct(id));
         },
-      }
-    );
+      },
+    ]);
   };
 
   return (
