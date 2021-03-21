@@ -1,11 +1,6 @@
-import React, {
-  useCallback,
-  useEffect,
-  useReducer,
-  useState,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -18,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import HeaderButton from '../../components/UI/HeaderButton';
 import Input from '../../components/UI/Input';
+import Colors from '../../constants/Colors';
 import * as productActions from '../../store/actions/products';
 
 const FORM_INPUT_UPDATE = 'UPDATE';
@@ -83,8 +79,13 @@ const EditProductScreen = (props) => {
     formIsValid: editedProduct ? true : false,
   });
 
-  // if that slice of state exists, then we want to pre-populate the value input OR place an empty string
+  useEffect(() => {
+    if (error) {
+      Alert.alert('An error has occured!', error, [{ text: 'Okay' }]);
+    }
+  }, [error]);
 
+  // if that slice of state exists, then we want to pre-populate the value input OR place an empty string
   const submitHandler = useCallback(async () => {
     if (!formState.formIsValid) {
       Alert.alert('Wrong Input!', 'Please check the errors in the form.', [
@@ -121,12 +122,14 @@ const EditProductScreen = (props) => {
           )
         );
       }
+
+      props.navigation.goBack();
     } catch (err) {
       setError(err.message);
     }
 
     setIsLoading(false);
-    props.navigation.goBack();
+
     // since we're checking for the titleIsValid, we MUST place it on the dependency array
   }, [dispatch, prodId, formState]);
 
@@ -147,6 +150,14 @@ const EditProductScreen = (props) => {
     },
     [dispatchFormState]
   );
+
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size='large' color={Colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -239,6 +250,11 @@ EditProductScreen.navigationOptions = (navData) => {
 const styles = StyleSheet.create({
   form: {
     margin: 20,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
