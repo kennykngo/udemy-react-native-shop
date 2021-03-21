@@ -1,5 +1,12 @@
-import React from 'react';
-import { Button, FlatList, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Button,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import CartItem from '../../components/shop/CartItem';
@@ -9,6 +16,7 @@ import * as orderActions from '../../store/actions/orders';
 import Card from '../../components/UI/Card';
 
 const CartScreen = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
   // .cart - App.js
   // .totalAmount - state in /reducers/cart
   const cartTotalAmount = useSelector((state) => state.cart.totalAmount);
@@ -33,6 +41,13 @@ const CartScreen = (props) => {
 
   const dispatch = useDispatch();
 
+  // since dispatch is an anonymous function, we can run async/await
+  const sendOrderHandler = async () => {
+    setIsLoading(true);
+    await dispatch(orderActions.addOrder(cartItems, cartTotalAmount));
+    setIsLoading(false);
+  };
+
   return (
     <View style={styles.screen}>
       <Card style={styles.summary}>
@@ -43,14 +58,16 @@ const CartScreen = (props) => {
           </Text>
         </Text>
 
-        <Button
-          color={Colors.accent}
-          title='Order Now'
-          disabled={cartItems.length === 0}
-          onPress={() => {
-            dispatch(orderActions.addOrder(cartItems, cartTotalAmount));
-          }}
-        />
+        {isLoading ? (
+          <ActivityIndicator size='small' color={Colors.primary} />
+        ) : (
+          <Button
+            color={Colors.accent}
+            title='Order Now'
+            disabled={cartItems.length === 0}
+            onPress={sendOrderHandler}
+          />
+        )}
       </Card>
       <FlatList
         data={cartItems}
