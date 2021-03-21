@@ -6,12 +6,12 @@ import { Provider } from 'react-redux';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import ReduxThunk from 'redux-thunk';
 
+import ShopNavigator from './navigation/ShopNavigator';
+import cartReducer from './store/reducers/cart';
+import ordersReducer from './store/reducers/orders';
 // import { composeWithDevTools } from 'redux-devtools-extension';
 
 import productsReducer from './store/reducers/products';
-import cartReducer from './store/reducers/cart';
-import ordersReducer from './store/reducers/orders';
-import ShopNavigator from './navigation/ShopNavigator';
 
 const rootReducer = combineReducers({
   products: productsReducer,

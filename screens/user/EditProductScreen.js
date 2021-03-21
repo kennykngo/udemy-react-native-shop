@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+  useState,
+} from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -47,6 +53,9 @@ const formReducer = (state, action) => {
 };
 
 const EditProductScreen = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+
   // first, take the productId (from editProductHandler of UserProductsScreen)
   const prodId = props.navigation.getParam('productId');
   // Take a slice of the state from the products state and take the .userProducts and see if the prodId matches that id
@@ -76,7 +85,7 @@ const EditProductScreen = (props) => {
 
   // if that slice of state exists, then we want to pre-populate the value input OR place an empty string
 
-  const submitHandler = useCallback(() => {
+  const submitHandler = useCallback(async () => {
     if (!formState.formIsValid) {
       Alert.alert('Wrong Input!', 'Please check the errors in the form.', [
         {
@@ -85,28 +94,39 @@ const EditProductScreen = (props) => {
       ]);
       return;
     }
+
+    // setIsLoading(true) will allow us to enable the ActivityIndicator from RN
+    setError(null);
+    setIsLoading(true);
+
     // if we're not editing the product, we're adding
-    if (editedProduct) {
-      dispatch(
-        productActions.updateProduct(
-          prodId,
-          formState.inputValues.title,
-          formState.inputValues.description,
-          formState.inputValues.imageUrl
-        )
-      );
-      props.navigation.goBack();
-    } else {
-      dispatch(
-        productActions.createProduct(
-          formState.inputValues.title,
-          formState.inputValues.description,
-          formState.inputValues.imageUrl,
-          +formState.inputValues.price
-        )
-      );
-      props.navigation.goBack();
+    try {
+      if (editedProduct) {
+        await dispatch(
+          productActions.updateProduct(
+            prodId,
+            formState.inputValues.title,
+            formState.inputValues.description,
+            formState.inputValues.imageUrl
+          )
+        );
+        props.navigation.goBack();
+      } else {
+        await dispatch(
+          productActions.createProduct(
+            formState.inputValues.title,
+            formState.inputValues.description,
+            formState.inputValues.imageUrl,
+            +formState.inputValues.price
+          )
+        );
+      }
+    } catch (err) {
+      setError(err.message);
     }
+
+    setIsLoading(false);
+    props.navigation.goBack();
     // since we're checking for the titleIsValid, we MUST place it on the dependency array
   }, [dispatch, prodId, formState]);
 

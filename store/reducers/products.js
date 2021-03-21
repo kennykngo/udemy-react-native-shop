@@ -1,11 +1,6 @@
 import PRODUCTS from '../../data/dummy-data';
 import Product from '../../models/product';
-import {
-  CREATE_PRODUCT,
-  DELETE_PRODUCT,
-  SET_PRODUCTS,
-  UPDATE_PRODUCT,
-} from '../actions/products';
+import { CREATE_PRODUCT, DELETE_PRODUCT, SET_PRODUCTS, UPDATE_PRODUCT } from '../actions/products';
 
 const initialState = {
   availableProducts: PRODUCTS,
