@@ -1,11 +1,11 @@
 import React from 'react';
-import { FlatList, Button, Platform, Alert } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { Alert, Button, FlatList, Platform } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { useDispatch, useSelector } from 'react-redux';
 
-import Colors from '../../constants/Colors';
 import ProductItem from '../../components/shop/ProductItem';
 import HeaderButton from '../../components/UI/HeaderButton';
+import Colors from '../../constants/Colors';
 import * as productsActions from '../../store/actions/products';
 
 const UserProductScreen = (props) => {

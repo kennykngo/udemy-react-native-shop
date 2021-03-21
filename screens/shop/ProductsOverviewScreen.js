@@ -27,8 +27,6 @@ const ProductsOverviewScreen = (props) => {
 
   // since loadProducts() isn't inside of useEffect anymore, you have to put it on the dependency array
   const loadProducts = useCallback(async () => {
-    console.log('LOAD PRODUCTS');
-
     setError(null);
     setIsLoading(true);
     try {
