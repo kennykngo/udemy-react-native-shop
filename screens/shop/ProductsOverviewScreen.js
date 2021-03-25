@@ -1,5 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Button, FlatList, Platform, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Button,
+  FlatList,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,6 +19,7 @@ import * as productsActions from '../../store/actions/products';
 
 const ProductsOverviewScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
   // state.products -> from App.js
   // .availableProducts -> default state from /reducers/products.js
@@ -20,14 +29,14 @@ const ProductsOverviewScreen = (props) => {
   // since loadProducts() isn't inside of useEffect anymore, you have to put it on the dependency array
   const loadProducts = useCallback(async () => {
     setError(null);
-    setIsLoading(true);
+    setIsRefreshing(true);
     try {
       await dispatch(productsActions.fetchProducts());
       // since we're RE-throwing the 'err' from /actions/products.js, this one will be able to catch it
     } catch (err) {
       setError(err.message);
     }
-    setIsLoading(false);
+    setIsRefreshing(false);
   }, [dispatch, setIsLoading, setError]);
 
   useEffect(() => {
@@ -46,7 +55,10 @@ const ProductsOverviewScreen = (props) => {
   // will run whenever component is loaded
   // Since useEffect cannot be an 'async' function with 'async' keyword
   useEffect(() => {
-    loadProducts();
+    setIsLoading(true);
+    loadProducts().then(() => {
+      setIsLoading(false);
+    });
   }, [dispatch, loadProducts]);
 
   const selectItemHandler = (id, title) => {
@@ -89,6 +101,8 @@ const ProductsOverviewScreen = (props) => {
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isRefreshing}
       data={products}
       keyExtractor={(item) => item.id}
       renderItem={(itemData) => (
