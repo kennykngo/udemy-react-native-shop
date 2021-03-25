@@ -29,7 +29,7 @@ export const fetchOrders = () => {
         );
       }
 
-      dispatch({ type: SET_ORDERS, products: loadedOrders });
+      dispatch({ type: SET_ORDERS, orders: loadedOrders });
     } catch (err) {
       throw err;
     }

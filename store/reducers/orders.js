@@ -1,5 +1,6 @@
-import { ADD_ORDER } from '../actions/orders';
+import { ADD_ORDER, SET_ORDERS } from '../actions/orders';
 import Order from '../../models/order';
+import { ActionSheetIOS } from 'react-native';
 
 const initialState = {
   orders: [],
@@ -7,6 +8,10 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case SET_ORDERS:
+      return {
+        orders: action.orders,
+      };
     case ADD_ORDER:
       const newOrder = new Order(
         action.orderData.id,
