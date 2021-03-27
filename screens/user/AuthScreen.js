@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import React, { useReducer, useCallback } from 'react';
 import {
   Button,
   KeyboardAvoidingView,
@@ -7,12 +7,80 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 import Card from '../../components/UI/Card';
 import Input from '../../components/UI/Input';
 import Colors from '../../constants/Colors';
+import * as authActions from '../../store/actions/auth';
+
+const FORM_INPUT_UPDATE = 'UPDATE';
+
+const formReducer = (state, action) => {
+  if (action.type === FORM_INPUT_UPDATE) {
+    const updatedValues = {
+      ...state.inputValues,
+      // dynamically store the keys and dynamically change the values
+      // Ex. input - 'title', then storing it in the action's values
+      [action.input]: action.value,
+    };
+    // first store the inputValidities EXISTING values
+    const updatedValidities = {
+      ...state.updatedValidities,
+      [action.input]: action.isValid,
+    };
+
+    let updatedFormIsValid = true;
+    // checks if ANY one of the updatedValidities[key] is false, it'll automatically override the updatedFormIsValid variable
+    for (const key in updatedValidities) {
+      updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
+    }
+
+    return {
+      formIsValid: updatedFormIsValid,
+      inputValidities: updatedValidities,
+      inputValues: updatedValues,
+    };
+  }
+  return state;
+};
 
 const AuthScreen = (props) => {
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      email: '',
+      password: '',
+    },
+    inputValidities: {
+      email: false,
+      password: false,
+    },
+    formIsValid: false,
+  });
+
+  const dispatch = useDispatch();
+
+  const signupHandler = () => {
+    dispatch(
+      authActions.signup(
+        formState.inputValues.email,
+        formState.inputValues.password
+      )
+    );
+  };
+
+  const inputChangeHandler = useCallback(
+    (inputIdentifier, inputValue, inputValidity) => {
+      dispatchFormState({
+        type: FORM_INPUT_UPDATE,
+        value: inputValue,
+        isValid: inputValidity,
+        input: inputIdentifier,
+      });
+    },
+    [dispatchFormState]
+  );
+
   return (
     <KeyboardAvoidingView
       behavior='padding'
@@ -30,8 +98,8 @@ const AuthScreen = (props) => {
               // 5 props below are custom
               email
               required
-              errorMessage='Please enter a valid email address.'
-              onInputChange={() => {}}
+              errorText='Please enter a valid email address.'
+              onInputChange={inputChangeHandler}
               initialValue=''
             />
             <Input
@@ -42,12 +110,16 @@ const AuthScreen = (props) => {
               minLength={5}
               autoCapitalize='none'
               required
-              errorMessage='Please enter a valid password.'
-              onInputChange={() => {}}
+              errorText='Please enter a valid password.'
+              onInputChange={inputChangeHandler}
               initialValue=''
             />
             <View style={styles.buttonContainer}>
-              <Button title='Login' color={Colors.primary} onPress={() => {}} />
+              <Button
+                title='Login'
+                color={Colors.primary}
+                onPress={signupHandler}
+              />
             </View>
             <View style={styles.buttonContainer}>
               <Button
