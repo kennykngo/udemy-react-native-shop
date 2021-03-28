@@ -1,4 +1,5 @@
 export const SIGNUP = 'SIGNUP';
+export const LOGIN = 'LOGIN';
 
 export const signup = (email, password) => {
   return async (dispatch) => {
@@ -52,6 +53,6 @@ export const login = (email, password) => {
     const resData = await response.json();
     console.log(resData);
 
-    dispatch({ type: SIGNUP });
+    dispatch({ type: LOGIN });
   };
 };
