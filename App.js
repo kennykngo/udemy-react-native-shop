@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
+import authReducer from './store/reducers/auth';
 import ReduxThunk from 'redux-thunk';
 
 import ShopNavigator from './navigation/ShopNavigator';
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   products: productsReducer,
   cart: cartReducer,
   orders: ordersReducer,
+  auth: authReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

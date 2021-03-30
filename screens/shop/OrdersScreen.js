@@ -39,6 +39,14 @@ const OrdersScreen = (props) => {
     );
   }
 
+  if (orders.length === 0) {
+    return (
+      <View style={styles.isOrdersZero}>
+        <Text>No Orders found, maybe start creating some products? </Text>
+      </View>
+    );
+  }
+
   return (
     <FlatList
       data={orders}
@@ -78,6 +86,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  isOrdersZero: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontFamily: 'open-sans',
   },
 });
 

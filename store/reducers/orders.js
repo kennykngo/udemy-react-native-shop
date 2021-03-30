@@ -1,6 +1,7 @@
-import { ADD_ORDER, SET_ORDERS } from '../actions/orders';
-import Order from '../../models/order';
 import { ActionSheetIOS } from 'react-native';
+
+import Order from '../../models/order';
+import { ADD_ORDER, SET_ORDERS } from '../actions/orders';
 
 const initialState = {
   orders: [],
