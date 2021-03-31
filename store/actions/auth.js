@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storge';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const SIGNUP = 'SIGNUP';
 export const LOGIN = 'LOGIN';
@@ -74,8 +74,12 @@ export const login = (email, password) => {
     console.log(resData);
 
     dispatch({ type: LOGIN, token: resData.idToken, userId: resData.localId });
+    // .expiresin property is received from firebase
+    const expirationDate = new Date(
+      new Date().getTime() + +resData.expiresin * 1000
+    );
     // need to also know how long it takes for the token to expire
-    saveDataToStorage(resData.idtoken, resData.localId);
+    saveDataToStorage(resData.idtoken, resData.localId, expirationDate);
   };
 };
 
