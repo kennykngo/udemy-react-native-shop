@@ -44,6 +44,7 @@ export default function App() {
       />
     );
   }
+  7;
 
   return (
     <Provider store={store}>

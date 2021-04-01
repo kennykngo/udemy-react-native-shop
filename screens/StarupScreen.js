@@ -2,10 +2,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // showing a screen when the app boots up
 import React, { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 import Colors from '../constants/Colors';
+import * as authActions from '../store/actions/auth';
 
 const StartupScreen = (props) => {
+  const dispatch = useDispatch();
   useEffect(() => {
     const tryLogin = async () => {
       const userData = await AsyncStorage.getItem('userData');
@@ -29,8 +32,9 @@ const StartupScreen = (props) => {
       // IF it passes both of the above conditionals, that means we do have a userId and a token
       // Simply navigate over to the Shop and the user doesn't need to RE-authenticate
       props.navigation.navigate('Shop');
+      dispatch(authActions.authenticate(userId, token));
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <View style={styles.screen}>
