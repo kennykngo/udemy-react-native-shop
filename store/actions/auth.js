@@ -2,6 +2,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const SIGNUP = 'SIGNUP';
 export const LOGIN = 'LOGIN';
+export const AUTHENTICATE = 'AUTHENTICATE';
+
+export const authenticate = (userId, token) => {
+  return { type: AUTHENTICATE, userId, token };
+};
 
 export const signup = (email, password) => {
   return async (dispatch) => {
@@ -35,7 +40,12 @@ export const signup = (email, password) => {
     const resData = await response.json();
     console.log(resData);
 
-    dispatch({ type: SIGNUP, token: resData.idToken, userId: resData.localId });
+    dispatch(authenticate(resdData.localId, resData.idToken));
+    const expirationDate = new Date(
+      new Date().getTime() + +resData.expiresin * 1000
+    );
+    // need to also know how long it takes for the token to expire
+    saveDataToStorage(resData.idtoken, resData.localId, expirationDate);
   };
 };
 
@@ -73,8 +83,9 @@ export const login = (email, password) => {
     const resData = await response.json();
     console.log(resData);
 
-    dispatch({ type: LOGIN, token: resData.idToken, userId: resData.localId });
+    dispatch(authenticate(resdData.localId, resData.idToken));
     // .expiresin property is received from firebase
+    // wraps the retrieved expiration date into a new Date object
     const expirationDate = new Date(
       new Date().getTime() + +resData.expiresin * 1000
     );
@@ -83,12 +94,13 @@ export const login = (email, password) => {
   };
 };
 
-const saveDataToStorage = (token, userId) => {
+const saveDataToStorage = (token, userId, expirationDate) => {
   AsyncStorage.setItem(
     'userData',
     JSON.stringify({
       token: token,
       userId: userId,
+      expiryDate: expirationDate.toISOString(),
     })
   );
 };
