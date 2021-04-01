@@ -30,6 +30,10 @@ const StartupScreen = (props) => {
         return;
       }
 
+      // expirationDate is a future date since it's taking the current time + the expiresin time
+      // this number should always be positive
+      const expirationTime = expirationDate.getTime() - new Date().getTime();
+
       // IF it passes both of the above conditionals, that means we do have a userId and a token
       // Simply navigate over to the Shop and the user doesn't need to RE-authenticate
       props.navigation.navigate('Shop');

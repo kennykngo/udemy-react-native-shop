@@ -5,8 +5,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
 
-export const authenticate = (userId, token) => {
-  return { type: AUTHENTICATE, userId, token };
+let timer;
+
+export const authenticate = (userId, token, expiryTime) => {
+  return (dispatch) => {
+    // can have two dispatch functions since in this function, we can't return twice, only once inside the scope
+    dispatch(setLogoutTimer(expiryTime));
+    dispatch({ type: AUTHENTICATE, userId, token });
+  };
 };
 
 export const signup = (email, password) => {
@@ -41,7 +47,9 @@ export const signup = (email, password) => {
     const resData = await response.json();
     console.log(resData);
 
-    dispatch(authenticate(localId, resData.idToken));
+    dispatch(
+      authenticate(resData.localId, resData.idToken, +resData.expiresIn * 1000)
+    );
     const expirationDate = new Date(
       new Date().getTime() + parseInt(resData.expiresIn) * 1000
     );
@@ -83,7 +91,9 @@ export const login = (email, password) => {
     const resData = await response.json();
     console.log(resData);
 
-    dispatch(authenticate(resData.localId, resData.idToken));
+    dispatch(
+      authenticate(resData.localId, resData.idToken, +resData.expiresIn * 1000)
+    );
     // .expiresin property is received from firebase
     // wraps the retrieved expiration date into a new Date object
     const expirationDate = new Date(
@@ -94,7 +104,26 @@ export const login = (email, password) => {
 };
 
 export const logout = () => {
+  clearLogoutTimer();
+  AsyncStorage.removeItem('userData');
   return { type: LOGOUT };
+};
+
+// clearTimeout is a built-in js function that removes the setTimeout functions
+const clearLogoutTimer = () => {
+  if (timer) {
+    clearTimeout(timer);
+  }
+};
+
+// sets a timer in milliseconds
+// After a certain amount of time, thanks to redux-thunk, we're allowed to take a function and return another function which is simply the 'dispatch()' function
+const setLogoutTimer = (expirationTime) => {
+  return (dispatch) => {
+    timer = setTimeout(() => {
+      dispatch(logout());
+    }, expirationTime);
+  };
 };
 
 const saveDataToStorage = (token, userId, expirationDate) => {
