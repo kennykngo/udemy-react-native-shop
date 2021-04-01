@@ -26,6 +26,7 @@ const StartupScreen = (props) => {
 
       // if expiration date is in the past, the token OR the userId doesn't exist, simply return
       if (expirationDate <= new Date() || !token || !userId) {
+        props.navigation.navigate('Auth');
         return;
       }
 
@@ -34,6 +35,7 @@ const StartupScreen = (props) => {
       props.navigation.navigate('Shop');
       dispatch(authActions.authenticate(userId, token));
     };
+    tryLogin();
   }, [dispatch]);
 
   return (
