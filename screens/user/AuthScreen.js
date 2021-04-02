@@ -1,13 +1,13 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState, useEffect, useReducer, useCallback } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import {
+  ActivityIndicator,
+  Alert,
   Button,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
   View,
-  ActivityIndicator,
-  Alert,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 

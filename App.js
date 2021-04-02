@@ -4,10 +4,10 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
-import authReducer from './store/reducers/auth';
 import ReduxThunk from 'redux-thunk';
 
-import ShopNavigator from './navigation/ShopNavigator';
+import NavigationContainer from './navigation/NavigationCotainer';
+import authReducer from './store/reducers/auth';
 import cartReducer from './store/reducers/cart';
 import ordersReducer from './store/reducers/orders';
 // import { composeWithDevTools } from 'redux-devtools-extension';
@@ -48,7 +48,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <ShopNavigator />
+      <NavigationContainer />
     </Provider>
   );
 }
