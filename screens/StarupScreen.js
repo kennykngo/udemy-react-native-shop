@@ -15,7 +15,8 @@ const StartupScreen = (props) => {
 
       // if the userData doesn't exist, then navigate to the Auth screen and return from the function
       if (!userData) {
-        props.navigation.navigate('Auth');
+        // props.navigation.navigate('Auth');
+        dispatch(authActions.setDidtryAL());
         return;
       }
 
@@ -26,7 +27,8 @@ const StartupScreen = (props) => {
 
       // if expiration date is in the past, the token OR the userId doesn't exist, simply return
       if (expirationDate <= new Date() || !token || !userId) {
-        props.navigation.navigate('Auth');
+        dispatch(authActions.setDidtryAL());
+        // props.navigation.navigate('Auth');
         return;
       }
 
@@ -36,7 +38,7 @@ const StartupScreen = (props) => {
 
       // IF it passes both of the above conditionals, that means we do have a userId and a token
       // Simply navigate over to the Shop and the user doesn't need to RE-authenticate
-      props.navigation.navigate('Shop');
+      // props.navigation.navigate('Shop');
       dispatch(authActions.authenticate(userId, token));
     };
     tryLogin();

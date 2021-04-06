@@ -22,14 +22,15 @@ import ProductsOverviewScreen, {
   screenOptions as productOverviewScreenOptions,
 } from '../screens/shop/ProductsOverviewScreen';
 import StartupScreen from '../screens/StarupScreen';
-import AuthScreen from '../screens/user/AuthScreen';
+import AuthScreen, {
+  screenOptions as authScreenOptions,
+} from '../screens/user/AuthScreen';
 import EditProductScreen, {
   screenOptions as editProductScreenOptions,
 } from '../screens/user/EditProductScreen';
 import UserProductsScreen, {
   screenOptions as userProductsScreenOptions,
 } from '../screens/user/UserProductsScreen';
-import UserProductScreen from '../screens/user/UserProductsScreen';
 import * as authActions from '../store/actions/auth';
 
 const defaultNavOptions = {
@@ -125,7 +126,7 @@ export const AdminNavigator = () => {
     <AdminStackNavigator.Navigator screenOptions={defaultNavOptions}>
       <AdminStackNavigator.Screen
         name='UserProducts'
-        component={UserProductScreen}
+        component={UserProductsScreen}
         options={userProductsScreenOptions}
       />
       <AdminStackNavigator.Screen
@@ -157,7 +158,7 @@ export const AdminNavigator = () => {
 // );
 
 const ShopDrawerNavigator = createDrawerNavigator();
-const ShopNavigator = () => {
+export const ShopNavigator = () => {
   const dispatch = useDispatch();
 
   return (
@@ -255,19 +256,33 @@ const ShopNavigator = () => {
 //   }
 // );
 
-const AuthNavigator = createStackNavigator(
-  {
-    Auth: AuthScreen,
-  },
-  {
-    defaultNavigationOptions: defaultNavOptions,
-  }
-);
+const AuthStackNavigator = createStackNavigator();
 
-const MainNavigator = createSwitchNavigator({
-  Startup: StartupScreen,
-  Auth: AuthNavigator,
-  Shop: ShopNavigator,
-});
+export const AuthNavigator = () => {
+  return (
+    <AuthStackNavigator.Navigator>
+      <AuthStackNavigator.Screen
+        name='Auth'
+        component={AuthScreen}
+        options={authScreenOptions}
+      />
+    </AuthStackNavigator.Navigator>
+  );
+};
 
-export default createAppContainer(MainNavigator);
+// const AuthNavigator = createStackNavigator(
+//   {
+//     Auth: AuthScreen,
+//   },
+//   {
+//     defaultNavigationOptions: defaultNavOptions,
+//   }
+// );
+
+// const MainNavigator = createSwitchNavigator({
+//   Startup: StartupScreen,
+//   Auth: AuthNavigator,
+//   Shop: ShopNavigator,
+// });
+
+// export default createAppContainer(MainNavigator);

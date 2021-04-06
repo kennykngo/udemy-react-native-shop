@@ -1,6 +1,14 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
-import { ActivityIndicator, Alert, Button, KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Button,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import Card from '../../components/UI/Card';
@@ -161,7 +169,7 @@ const AuthScreen = (props) => {
   );
 };
 
-AuthScreen.navigationOptions = {
+export const screenOptions = {
   headerTitle: 'Authenticate',
 };
 
