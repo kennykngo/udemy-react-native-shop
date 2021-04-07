@@ -23,7 +23,7 @@ export default (state = initialState, action) => {
     //   };
     case LOGOUT:
       // Simply return initialState and both token and userId is set to null
-      return initialState;
+      return { ...initialState, didTryAutoLogin: true };
     default:
       return state;
   }

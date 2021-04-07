@@ -40,14 +40,11 @@ const ProductsOverviewScreen = (props) => {
   }, [dispatch, setIsLoading, setError]);
 
   useEffect(() => {
-    const willFocusSub = props.navigation.addListener(
-      'willFocus',
-      loadProducts
-    );
+    const unsubscribe = props.navigation.addListener('focus', loadProducts);
 
     // useEffect can also return a cleanup function whenever the function is reran
     return () => {
-      willFocusSub.remove();
+      unsubscribe();
     };
   }, [loadProducts]);
 
