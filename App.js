@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import ReduxThunk from 'redux-thunk';
+import * as Notifications from 'expo-notifications';
 
 import AppNavigator from './navigation/AppNavigator';
 import authReducer from './store/reducers/auth';
@@ -13,6 +14,14 @@ import ordersReducer from './store/reducers/orders';
 // import { composeWithDevTools } from 'redux-devtools-extension';
 
 import productsReducer from './store/reducers/products';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldShowAlert: true,
+    };
+  },
+});
 
 const rootReducer = combineReducers({
   products: productsReducer,

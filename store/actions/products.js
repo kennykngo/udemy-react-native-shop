@@ -1,3 +1,6 @@
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
+
 import Product from '../../models/product';
 
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
@@ -24,9 +27,11 @@ export const fetchProducts = () => {
 
       for (const key in resData) {
         loadedProducts.push(
+          // as seen on firebase
           new Product(
             key,
             resData[key].ownerId,
+            resData[key].ownerPushToken,
             resData[key].title,
             resData[key].imageUrl,
             resData[key].description,
@@ -68,6 +73,21 @@ export const deleteProduct = (productId) => {
 // Now returns a Promise
 export const createProduct = (title, description, imageUrl, price) => {
   return async (dispatch, getState) => {
+    let pushToken;
+    let statusObj = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    if (statusObj.status !== 'granted') {
+      statusObj = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    }
+
+    if (statusObj.status !== 'granted') {
+      pushToken = null;
+    } else {
+      // since the async function returns a promise, we should await it
+      pushToken = (await Notifications.getExpoPushTokenAsync()).data;
+    }
+
+    Notifications.getExpoPushTokenAsync();
+
     const token = getState().auth.token;
     const userId = getState().auth.userId;
     // use any async code you want!
@@ -86,8 +106,8 @@ export const createProduct = (title, description, imageUrl, price) => {
           description,
           imageUrl,
           price,
-          // now we're actually mapping products to a user
           ownerId: userId,
+          ownerPushToken: pushToken,
         }),
       }
     );
@@ -104,6 +124,7 @@ export const createProduct = (title, description, imageUrl, price) => {
         imageUrl,
         price,
         ownerId: userId,
+        pushToken,
       },
     });
   };
